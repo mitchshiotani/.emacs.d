@@ -1,24 +1,25 @@
 ;; Setup ;;
 
-(setq user-emacs-directory "/Users/mitchshiotani/.emacs.d") 
+(setq user-emacs-directory "~/.emacs.d") 
 (setq inhibit-startup-message t)
-(setq initial-buffer-choice "/Users/mitchshiotani/.emacs.d/OrgFiles/Hello.org")
+(setq initial-buffer-choice "~/.emacs.d/Hello.org")
 (setq make-backup-files nil)
 (require 'package)
-
-(package-initialize)
-;; (package-refresh-contents)
-(unless (package-installed-p 'use-package)
-  (package-install 'use-package))
-
-(eval-when-compile
-  (require 'use-package))
 
 (setq package-archives '(
 			 ("melpa-stable" . "http://stable.melpa.org/packages/")
 			 ("melpa" . "https://melpa.org/packages/")
                          ("org" . "https://orgmode.org/elpa/")
                          ("gnu" . "https://elpa.gnu.org/packages/")))
+
+(package-initialize)
+;;(package-refresh-contents)
+(unless (package-installed-p 'use-package)
+  (package-install 'use-package))
+
+(eval-when-compile
+  (require 'use-package))
+
 (add-to-list 'custom-theme-load-path "~/.emacs.d/themes/")
 
 ;; Packages ;;
@@ -54,7 +55,7 @@
     (setq plantuml-jar-path "/Users/mitchshiotani/.emacs.d/Java/plantuml.1.2021.8.jar")
     (setq plantuml-default-exec-mode 'jar)))
 
-(use-package auto-complete-mode
+(use-package auto-complete
   :ensure t
   :config
   (auto-complete-mode 1))
@@ -108,8 +109,10 @@
 
 ;; Theme ;;
 
+(use-package zenburn-theme
+  :ensure t)
 (load-theme 'zenburn t)
-(set-face-attribute 'default nil :height 170)
+(set-face-attribute 'default nil :height 150)
 
 ;; Org mode ;;
 
@@ -138,7 +141,7 @@
  '(company-quickhelp-color-background "#4F4F4F")
  '(company-quickhelp-color-foreground "#DCDCCC")
  '(custom-safe-themes
-   '("ea5822c1b2fb8bb6194a7ee61af3fe2cc7e2c7bab272cbb498a0234984e1b2d9" default))
+   '("e6df46d5085fde0ad56a46ef69ebb388193080cc9819e2d6024c9c6e27388ba9" "ea5822c1b2fb8bb6194a7ee61af3fe2cc7e2c7bab272cbb498a0234984e1b2d9" default))
  '(fci-rule-color "#383838")
  '(nrepl-message-colors
    '("#CC9393" "#DFAF8F" "#F0DFAF" "#7F9F7F" "#BFEBBF" "#93E0E3" "#94BFF3" "#DC8CC3"))
@@ -174,3 +177,21 @@
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
  )
+
+(toggle-menu-bar-mode-from-frame 0)
+(toggle-tool-bar-mode-from-frame 0)
+
+(set-face-attribute 'default nil :font "Noto Sans Mono-11" )
+(set-frame-font "Noto Sans Mono-11" nil t)
+
+;; (evil-ex-define-cmd "ls" "buffers")
+;; (evil-ex-define-cmd "buffers" 'buffer-menu-toggle-files-only)
+
+;; Put autosave files (ie #foo#) and backup files (ie foo~) in ~/.emacs-backups/.
+(custom-set-variables
+  '(auto-save-file-name-transforms '((".*" "~/.emacs-backups/autosaves/\\1" t)))
+  '(backup-directory-alist '((".*" . "~/.emacs-backups/backups/"))))
+
+;; create the autosave dir if necessary, since emacs won't.
+(make-directory "~/.emacs-backups/autosaves/" t)
+(make-directory "~/.emacs-backups/backups/" t)
