@@ -2,12 +2,13 @@
 
 (setq user-emacs-directory "~/.emacs.d") 
 (setq inhibit-startup-message t)
-(setq initial-buffer-choice "~/.emacs.d/Hello.org")
+(setq initial-buffer-choice "~/.emacs.d/OrgFiles/Hello.org")
+;; (setq initial-buffer-choice "~/.emacs.d/Hello.org")
 (setq make-backup-files nil)
 (require 'package)
 
 (setq package-archives '(
-			 ("melpa-stable" . "http://stable.melpa.org/packages/")
+			 ;; ("melpa-stable" . "http://stable.melpa.org/packages/")
 			 ("melpa" . "https://melpa.org/packages/")
                          ("org" . "https://orgmode.org/elpa/")
                          ("gnu" . "https://elpa.gnu.org/packages/")))
@@ -26,6 +27,39 @@
 
 (use-package org
   :ensure t)
+(require 'org-tempo)
+(require 'org-capture)
+(setq org-ellipsis "↴")
+
+;; making org mode prettier, reference below
+;; https://zzamboni.org/post/beautifying-org-mode-in-emacs/
+
+(use-package org-bullets
+  :config
+  (add-hook 'org-mode-hook (lambda () (org-bullets-mode 1))))
+
+(let* ((variable-tuple
+	(cond ((x-list-fonts "ETBembo")         '(:font "ETBembo"))
+	    ((x-list-fonts "Menlo") '(:font "Menlo"))
+	    ((x-list-fonts "Source Sans Pro") '(:font "Source Sans Pro"))
+	    ((x-list-fonts "Verdana")         '(:font "Verdana"))
+	    ((x-list-fonts "Lucida Grande")   '(:font "Lucida Grande"))
+	    ((x-family-fonts "Sans Serif")    '(:family "Sans Serif"))
+	    (nil (warn "Cannot find a Sans Serif Font.  Install Source Sans Pro."))))
+	;;(base-font-color     (face-foreground 'default nil 'default))
+	;;(headline           `(:inherit default :weight bold :foreground ,base-font-color)))
+	(headline           `(:inherit default :weight bold)))
+(custom-theme-set-faces
+    'user
+    `(org-level-8 ((t (,@headline ,@variable-tuple))))
+    `(org-level-7 ((t (,@headline ,@variable-tuple))))
+    `(org-level-6 ((t (,@headline ,@variable-tuple))))
+    `(org-level-5 ((t (,@headline ,@variable-tuple))))
+    `(org-level-4 ((t (,@headline ,@variable-tuple :height 1.1))))
+    `(org-level-3 ((t (,@headline ,@variable-tuple :height 1.25))))
+    `(org-level-2 ((t (,@headline ,@variable-tuple :height 1.5))))
+    `(org-level-1 ((t (,@headline ,@variable-tuple :height 1.75))))
+    `(org-document-title ((t (,@headline ,@variable-tuple :height 2.0 :underline nil))))))
 
 (use-package evil
   :ensure t
@@ -43,6 +77,8 @@
 
 (use-package slime
   :ensure t)
+;; (load (expand-file-name "~/.quicklisp/slime-helper.el"))
+(setf inferior-lisp-program "/usr/local/bin/sbcl")
 
 (use-package org-journal
   :ensure t)
@@ -106,12 +142,14 @@
 
 ;; set line numbers
 (global-set-key (kbd "C-c l") 'display-line-numbers-mode)
+(setq display-line-numbers-type 'relative)
 
 ;; Theme ;;
 
 (use-package zenburn-theme
   :ensure t)
-(load-theme 'zenburn t)
+;; (load-theme 'zenburn t)
+(load-theme 'deeper-blue t)
 (set-face-attribute 'default nil :height 150)
 
 ;; Org mode ;;
@@ -126,6 +164,24 @@
       ;; "|"
       "DONE"
       "DEFERRED")))
+
+;; trying out GTD on org mode, following this:
+;; https://emacs.cafe/emacs/orgmode/gtd/2017/06/30/orgmode-gtd.html
+
+(setq org-agenda-files '("~/.emacs.d/gtd/inbox.org"
+                         "~/.emacs.d/gtd/gtd.org"
+                         "~/.emacs.d/gtd/tickler.org"))
+
+(setq org-capture-templates '(("t" "Todo [inbox]" entry
+                               (file+headline "~/.emacs.d/gtd/inbox.org" "Tasks")
+                               "* TODO %i%?")
+                              ("T" "Tickler" entry
+                               (file+headline "~/.emacs.d/gtd/tickler.org" "Tickler")
+                               "* %i%? \n %U")))
+
+(setq org-refile-targets '(("~/.emacs.d/gtd/gtd.org" :maxlevel . 3)
+                           ("~/.emacs.d/gtd/someday.org" :level . 1)
+                           ("~/.emacs.d/gtd/tickler.org" :maxlevel . 2)))
 
 ;; Etc ;;
 
@@ -180,6 +236,7 @@
 
 (toggle-menu-bar-mode-from-frame 0)
 (toggle-tool-bar-mode-from-frame 0)
+(toggle-scroll-bar -1)
 
 (set-face-attribute 'default nil :font "Noto Sans Mono-11" )
 (set-frame-font "Noto Sans Mono-11" nil t)
