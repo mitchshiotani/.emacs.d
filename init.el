@@ -40,7 +40,7 @@
 
 (let* ((variable-tuple
 	(cond ((x-list-fonts "ETBembo")         '(:font "ETBembo"))
-	    ((x-list-fonts "Menlo") '(:font "Menlo"))
+	    ((x-list-fonts "Menlo") '(:font "Menlo")) ;; just using this font for now
 	    ((x-list-fonts "Source Sans Pro") '(:font "Source Sans Pro"))
 	    ((x-list-fonts "Verdana")         '(:font "Verdana"))
 	    ((x-list-fonts "Lucida Grande")   '(:font "Lucida Grande"))
@@ -161,16 +161,17 @@
       "DOING"
       ;; "WAITING"
       ;; "DELEGATED"
-      ;; "|"
+      "|"
       "DONE"
       "DEFERRED")))
 
 ;; trying out GTD on org mode, following this:
 ;; https://emacs.cafe/emacs/orgmode/gtd/2017/06/30/orgmode-gtd.html
 
-(setq org-agenda-files '("~/.emacs.d/gtd/inbox.org"
-                         "~/.emacs.d/gtd/gtd.org"
-                         "~/.emacs.d/gtd/tickler.org"))
+(setq org-agenda-files '("~/.emacs.d/gtd/"
+                         ;; "~/.emacs.d/gtd/gtd.org"
+                         ;; "~/.emacs.d/gtd/tickler.org"))
+                         "~/.emacs.d/OrgFiles/"))
 
 (setq org-capture-templates '(("t" "Todo [inbox]" entry
                                (file+headline "~/.emacs.d/gtd/inbox.org" "Tasks")
@@ -182,6 +183,10 @@
 (setq org-refile-targets '(("~/.emacs.d/gtd/gtd.org" :maxlevel . 3)
                            ("~/.emacs.d/gtd/someday.org" :level . 1)
                            ("~/.emacs.d/gtd/tickler.org" :maxlevel . 2)))
+
+;; keybinding for org-capture, should be C-c C-c by default but wasn't working for some reason
+(global-set-key (kbd "C-c c") 'org-capture)
+(setq org-src-preserve-indentation t)
 
 ;; Etc ;;
 
